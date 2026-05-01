@@ -12,6 +12,7 @@ A collection of reusable AI prompts that work across different tools and models.
 | idea-refiner | Drop rough keywords and fragments, get back a focused idea brief |
 | to-prd | Turn conversation context into a product requirements document |
 | to-tech-spec | Turn conversation context into an AI-ready technical specification |
+| build-app | Pre-flight check before building — flags blockers, long-running commands, missing credentials, and ambiguities so you can go AFK |
 
 ## The Idea-to-Code Pipeline
 
@@ -19,10 +20,10 @@ These skills are designed to work together as a pipeline that takes you from a r
 
 ```
  ┌─────────────┐     ┌──────────────┐     ┌──────────────┐     ┌───────────┐
- │ idea-refiner │ ──▶ │  grill-me /  │ ──▶ │  to-tech-spec │ ──▶ │   Build   │
+ │ idea-refiner │ ──▶ │  grill-me /  │ ──▶ │  to-tech-spec │ ──▶ │ build-app │
  │              │     │ design-grill │     │  (or to-prd) │     │           │
- │ rough words  │     │ stress-test  │     │ buildable    │     │ hand spec │
- │ → idea brief │     │ the idea     │     │ spec output  │     │ to agent  │
+ │ rough words  │     │ stress-test  │     │ buildable    │     │ pre-flight│
+ │ → idea brief │     │ the idea     │     │ spec output  │     │ then build│
  └─────────────┘     └──────────────┘     └──────────────┘     └───────────┘
 ```
 
@@ -49,9 +50,12 @@ Alternatively, use **to-prd** if you need a product-focused document for human s
 **Input:** a conversation with resolved decisions
 **Output:** a complete tech spec (or PRD) ready for execution
 
-### Stage 4: Build
+### Stage 4: Build — "Build this"
 
-Hand the tech spec to a coding agent (or yourself). The spec is written to be unambiguous — every feature has acceptance criteria, every endpoint has request/response shapes, and the implementation order tells the agent what to build first.
+Say **"build this"** or **"build the app"** and the **build-app** skill kicks in. Before writing any code, it runs a pre-flight scan of the tech spec and flags everything that could stall the build: missing env vars, API keys, long-running commands you'll need to start yourself, ambiguous requirements, and high-risk operations. Items are grouped into **blockers** (need your input), **handled** (the agent resolves them), and **heads-up** (needed later). If there are no blockers, the build starts immediately and you can walk away.
+
+**Input:** a tech spec (or PRD)
+**Output:** a pre-flight report, then a fully built project
 
 ### Skipping stages
 
@@ -67,6 +71,7 @@ prompts/                  ← LLM-agnostic markdown (works everywhere)
   grill-me.md
 
 .kiro/skills/             ← Kiro-specific wrappers (SKILL.md with frontmatter)
+  build-app/SKILL.md
   design-grill/SKILL.md
   grill-me/SKILL.md
   tdd/SKILL.md

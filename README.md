@@ -2,13 +2,62 @@
 
 A collection of reusable AI prompts that work across different tools and models. The prompts live in `prompts/` as plain markdown (LLM-agnostic). Tool-specific wrappers are provided where needed.
 
-## Prompts
+## Prompts & Skills
 
-| Prompt | Description |
-|--------|-------------|
+| Skill | Description |
+|-------|-------------|
 | [grill-me](prompts/grill-me.md) | Interview you relentlessly about a plan until reaching shared understanding |
 | [design-grill](prompts/design-grill.md) | Grill you on design choices — architecture, patterns, data modeling, trade-offs |
-| tdd | Test-driven development with red-green-refactor loop (Kiro skill only for now) |
+| tdd | Test-driven development with red-green-refactor loop |
+| idea-refiner | Drop rough keywords and fragments, get back a focused idea brief |
+| to-prd | Turn conversation context into a product requirements document |
+| to-tech-spec | Turn conversation context into an AI-ready technical specification |
+
+## The Idea-to-Code Pipeline
+
+These skills are designed to work together as a pipeline that takes you from a rough thought to a buildable spec. You can enter at any stage and skip what you don't need.
+
+```
+ ┌─────────────┐     ┌──────────────┐     ┌──────────────┐     ┌───────────┐
+ │ idea-refiner │ ──▶ │  grill-me /  │ ──▶ │  to-tech-spec │ ──▶ │   Build   │
+ │              │     │ design-grill │     │  (or to-prd) │     │           │
+ │ rough words  │     │ stress-test  │     │ buildable    │     │ hand spec │
+ │ → idea brief │     │ the idea     │     │ spec output  │     │ to agent  │
+ └─────────────┘     └──────────────┘     └──────────────┘     └───────────┘
+```
+
+### Stage 1: Idea Refiner — "I have a vague thought"
+
+Start here when you have loose words, keywords, or half-formed thoughts. Say **"refine my idea"** and drop your raw input. The skill asks up to 5 targeted questions and produces a structured **idea brief** with: one-liner, problem, target user, core features, form factor, and differentiation.
+
+**Input:** scattered words and fragments
+**Output:** a focused idea brief
+
+### Stage 2: Grill — "Is this idea solid?"
+
+Once you have a clear idea (from Stage 1 or your own thinking), stress-test it. Use **grill-me** for general plan interrogation or **design-grill** for architecture and technical design decisions. These skills poke holes, challenge assumptions, and force you to resolve ambiguity before you commit to building.
+
+**Input:** an idea brief or plan
+**Output:** a battle-tested plan with decisions resolved
+
+### Stage 3: Tech Spec — "Make it buildable"
+
+After the idea is refined and grilled, say **"to tech spec"** or **"spec this out"**. The skill mines the entire conversation — every decision, constraint, and feature discussed — and produces a structured technical specification. This includes: tech stack, data model, API routes, features with acceptance criteria, UI specs, and a step-by-step implementation order.
+
+Alternatively, use **to-prd** if you need a product-focused document for human stakeholders rather than an AI-ready build spec.
+
+**Input:** a conversation with resolved decisions
+**Output:** a complete tech spec (or PRD) ready for execution
+
+### Stage 4: Build
+
+Hand the tech spec to a coding agent (or yourself). The spec is written to be unambiguous — every feature has acceptance criteria, every endpoint has request/response shapes, and the implementation order tells the agent what to build first.
+
+### Skipping stages
+
+- **Already know what you want?** Skip straight to Stage 3 — just describe the project in conversation and say "to tech spec."
+- **Already have a spec?** Skip everything — start building.
+- **Just exploring?** Stay in Stage 1 and 2 as long as you need. The pipeline doesn't rush you.
 
 ## Architecture
 
@@ -21,6 +70,10 @@ prompts/                  ← LLM-agnostic markdown (works everywhere)
   design-grill/SKILL.md
   grill-me/SKILL.md
   tdd/SKILL.md
+  idea-refiner/SKILL.md
+  to-prd/SKILL.md
+  to-tech-spec/SKILL.md   ← references TEMPLATE.md
+  to-tech-spec/TEMPLATE.md
 ```
 
 The `prompts/` folder is the source of truth. Each file is a standalone prompt you can paste into any AI chat, IDE agent, or CLI tool. The `.kiro/skills/` folder contains Kiro-specific wrappers that reference the same logic but add frontmatter so Kiro can detect and activate them automatically.

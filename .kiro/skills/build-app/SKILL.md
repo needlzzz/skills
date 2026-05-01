@@ -66,7 +66,20 @@ Read the full spec and flag every item that falls into these categories:
 - Native dependencies that need compilation
 - Permissions or admin access required
 
-### 3. Report
+### 3. Collect all commands
+
+Scan the spec and your planned implementation to build a complete list of every shell command you will need to run during the build. For each command, determine:
+
+- **The exact command** (e.g., `npm install`, `npx prisma generate`, `npm run build`)
+- **Why it's needed** (dependency install, code generation, compilation, etc.)
+- **Whether it needs user approval** — commands that Kiro would normally pause on for confirmation (installs, builds, scaffolding CLIs, code generators, etc.)
+
+Group commands into:
+
+- **Trusted commands** — commands the user should add to their trusted/auto-approved list so the build runs without interruption
+- **Manual commands** — commands the user must run themselves (dev servers, watch mode, anything long-running)
+
+### 4. Report
 
 Present findings as a checklist grouped by category. For each item:
 
@@ -81,6 +94,25 @@ Example format:
 ```
 ## Pre-flight Report
 
+### Commands I'll need to run
+Add these to your trusted command list so I can run them without interruption:
+
+| # | Command | Purpose |
+|---|---------|---------|
+| 1 | `npm install` | Install dependencies |
+| 2 | `npx prisma generate` | Generate Prisma client |
+| 3 | `npx prisma db push` | Sync database schema |
+| 4 | `npm run build` | Compile TypeScript |
+| 5 | `npm run test` | Verify implementation |
+
+### Commands you'll need to run yourself
+These are long-running or interactive — run them in your own terminal:
+
+| Command | When |
+|---------|------|
+| `npm run dev` | After build, to test locally |
+| `docker compose up -d` | Before build, if using containerized DB |
+
 ### Blockers (need your input before I start)
 - [ ] `.env` file needed with DATABASE_URL — I can't generate this for you
 - [ ] Stripe API key required for payment module
@@ -88,22 +120,20 @@ Example format:
 ### Handled (I'll take care of these)
 - [x] Will use npm (no lockfile detected)
 - [x] Will scaffold SQLite for local dev instead of Postgres
-- [x] Will skip dev server — you'll need to run `npm run dev` yourself after build
 
 ### Heads-up (needed later, not blocking)
-- [ ] You'll need to run `npm run dev` in your terminal to test
 - [ ] Deployment section requires AWS credentials — skipping for now
 
 ### Ambiguities (I made a call, override if you disagree)
 - Spec says "authentication" but doesn't specify provider — I'll use JWT with local strategy
 ```
 
-### 4. Wait or proceed
+### 5. Wait or proceed
 
 - If there are **blockers**, stop and wait for the user to resolve them.
-- If there are **no blockers**, tell the user "No blockers — starting the build. Check back when I'm done." and proceed immediately.
+- If there are **no blockers**, tell the user "No blockers — starting the build. Add the commands above to your trusted list and I'll proceed." and wait briefly for them to do so, then proceed.
 
-### 5. Build
+### 6. Build
 
 Execute the implementation following the tech spec. Work through it systematically:
 

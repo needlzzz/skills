@@ -8,6 +8,7 @@ A collection of reusable AI prompts that work across different tools and models.
 |-------|-------------|
 | [grill-me](prompts/grill-me.md) | Interview you relentlessly about a plan until reaching shared understanding |
 | [design-grill](prompts/design-grill.md) | Grill you on design choices — architecture, patterns, data modeling, trade-offs |
+| [to-dos](prompts/to-dos.md) | Turn rough notes into a concise, codebase-aware to-do document |
 | tdd | Test-driven development with red-green-refactor loop |
 | idea-refiner | Drop rough keywords and fragments, get back a focused idea brief |
 | to-prd | Turn conversation context into a product requirements document |
@@ -69,6 +70,7 @@ Say **"build this"** or **"build the app"** and the **build-app** skill kicks in
 prompts/                  ← LLM-agnostic markdown (works everywhere)
   design-grill.md
   grill-me.md
+  to-dos.md
 
 .kiro/skills/             ← Kiro-specific wrappers (SKILL.md with frontmatter)
   build-app/SKILL.md
@@ -79,6 +81,7 @@ prompts/                  ← LLM-agnostic markdown (works everywhere)
   to-prd/SKILL.md
   to-tech-spec/SKILL.md   ← references TEMPLATE.md
   to-tech-spec/TEMPLATE.md
+  to-dos/SKILL.md
 ```
 
 The `prompts/` folder is the source of truth. Each file is a standalone prompt you can paste into any AI chat, IDE agent, or CLI tool. The `.kiro/skills/` folder contains Kiro-specific wrappers that reference the same logic but add frontmatter so Kiro can detect and activate them automatically.

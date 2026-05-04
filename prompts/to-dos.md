@@ -1,33 +1,10 @@
-# To-Dos
+# To-Do
 
-> Turn rough notes into a concise, codebase-aware to-do document.
-
-## How to Use
-
-Paste this prompt into any AI chat, then provide your notes and a reference to your project's context file (README, context.md, or similar).
-
----
-
-## Prompt
-
-I'm going to give you rough notes about work that needs to be done. Turn them into a clean to-do document.
-
-### Before writing tasks
-
-1. Read the project's context file (context.md, README, or equivalent) to understand the codebase structure, conventions, and vocabulary.
-2. Explore relevant parts of the codebase to ground each task in what actually exists.
-
-### For each note, produce a task row
+> Generated from notes on 2026-05-03. Context: Zunftiq — bugs, demo script, QR-Rechnung.
 
 | # | Task | Area | Notes |
 |---|------|------|-------|
-| 1 | Short imperative description | Module or feature area | Optional: dependency, blocker, or brief context |
-
-### Rules
-
-- One short sentence per task, imperative form ("Add X", "Fix Y", "Create Z").
-- Reference actual modules, files, and conventions from the project.
-- Use the project's own terminology.
-- List tasks in execution order when dependencies exist.
-- Don't invent extra tasks — match the input 1:1.
-- If a note is too vague, ask instead of guessing.
+| 1 | Fix duplicate "Mitarbeiter zuweisen" dropdown on job detail page — only one `<select id="assign-worker">` should render after assigning a worker | `components/jobs/job-assignments.tsx`, `jobs/[id]/page.tsx` | Component itself renders one dropdown; likely a stale-state or `router.refresh()` race causing the assign form to re-mount while old instance is still visible |
+| 2 | Diagnose and fix timer stop bug — click "Stoppen" triggers an error; add console/server logs around `handleClockOut` to pinpoint the failure | `components/time/time-tracker.tsx`, `lib/client-logger.ts` | Logs go to `/api/log` and browser console; check if `activeEntry` is null on click or if the Supabase update returns an RLS/permission error |
+| 3 | Reduce Marco's Selenium demo to one start/stop cycle — remove Phase 4.3 (zweiter Einsatz) and adjust Phase 4.4 + 5 to handle a single time entry | `scripts/demo-walkthrough.mjs`, `docs/demo-walkthrough.md` | Currently creates 2 entries (4.1 + 4.3) and submits/approves both; change to 1 entry so the demo is cleaner |
+| 4 | Seed QR-IBAN for the test company so the demo PDF shows a Swiss QR-Rechnung payment slip | `supabase/seed-iban-testdata.sql` | Infrastructure exists (company settings field, `swissqrbill` in PDF gen, encrypted storage via `encrypt_company_iban` RPC); just needs the seed script run with the real `PGCRYPTO_ENCRYPTION_KEY` instead of placeholder `'your-base64-encoded-key'` |
